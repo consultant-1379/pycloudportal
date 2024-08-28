@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VappTemplates - Cloud Provisioning Portal{% endblock title %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+
+{% block content %}
+
+<h1>Add To My Cloud</h1>
+<form action="{%url 'create_vapp_from_template' vapp_template_id %}" id="VappTemplateDeployForm" method="post" accept-charset="utf-8">
+    {% csrf_token %}
+
+    <input type="hidden" name="vapp_template_id" value="{{vapp_template_id}}">
+    <div class="input text required">
+        <label for="VappTemplateName">vApp Name</label>
+        <input name="VappTemplateName" type="text" id="VappTemplateName" required="required">
+    </div>
+
+    <div class="input select required">
+        <label for="VappTemplateOrgvdc">Cloud</label>
+        <select name="orgvdc" id="VappTemplateOrgvdc">
+            {% for org in orgvdcs %}
+                <option value="{{org.name}}">{{org.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="input checkbox">
+        <input type="checkbox" name="poweron" checked="checked" value="1" id="VappTemplatePowerOn">
+        <label for="VappTemplatePowerOn">Power on vApp</label>
+    </div>
+    <div class="submit">
+        <input type="submit" value="Add To Cloud">
+    </div>
+</form>
+</div>
+
+{% endblock content %}

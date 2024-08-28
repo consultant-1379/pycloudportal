@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Groups{% endblock title %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+{% block content %}
+    <div class="layout-bar"><a class="action-back" href="/Groups"><img src="../../static/img/ArrowLeft_black_16px.svg"> Back To Groups</a></div>
+    <h1>Add Group</h1>
+    {% comment %} Only if not pooling_enabled {% endcomment %}
+    <form action="{% url 'add_groups' %}" method="POST">
+        {% csrf_token %}
+        <div class='input text required'>
+            <label for="ldap_group">LDAP Group Distinguished Name (e.g. CN=IEAT-VCD-CI1-Admin,OU=INACC,OU=P001,OU=GRP,OU=Data,DC=ericsson,DC=se )</label>
+            <input style="width:35%" name='group_dn' type='text' value='CN=PASTEHERE,OU=INACC,OU=P001,OU=GRP,OU=Data,DC=ericsson,DC=se'>
+        </div>
+        <div class='input text required'>
+            <label for="orgvdc_name">OrgVdc To Give Permission To</label>
+            <select name='orgvdc_name'>
+                <option value='' selected> -- Select an OrgVdc -- </option>
+                {% for org_vdc in org_vdcs %}
+                    <option value='{{org_vdc.name}}'> {{org_vdc.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class='input text required'>
+            <label for="org_name">Org To Give Permission To</label>
+            <select name='org_name'>
+                <option value='' selected> -- Select an Org -- </option>
+                {% for org in orgs %}
+                    <option value='{{org.name}}'> {{org.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class='input text'>
+            <label for="catalog_permissions"><b>Restrict read access to the Catalogs below (select many by holding down Ctrl)</b></label>
+            <select name='catalog_permissions' multiple size='10' style='width:35%'>
+                {% for catalog in catalogs %}
+                    <option value='{{catalog.name}}'> {{catalog.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class='input text'>
+            <input type='checkbox' name='cat_restricted' value="catalog_permissions"/>
+            <label for="catalogs_restricted">Restrict read access to the selected Catalogs above</label>
+            <input type='checkbox' name='read_permission' value="read_permission"/>
+            <label for="read_permission">Read Permission</label>
+            <input type='checkbox' name='write_permission' value="write_permission"/>
+            <label for="write_permission">Write Permission</label>
+            <input type='checkbox' name='admin_permission' value="admin_permission"/>
+            <label for="admin_permission">Admin Permission</label>
+        </div>
+        <input class="btn btn-success btn-lg" type='submit' value="Save">
+    </form>
+{% endblock content %}

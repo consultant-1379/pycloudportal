@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+<h1>Reports</h1>
+<hr>
+<div id="report">
+    <table id="datatable_reports" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Report Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="/Reports/datacenter_report" style='text-decoration: none'>Generate Datacenter Report</a></td>
+                <td>Generate a live datacenter report</td>
+            </tr>
+            <tr>
+                <td><a href="/Reports/vapp_report" style='text-decoration: none'>Generate vApp Report</a></td>
+                <td>Generate a live vApp report</td>
+            </tr>
+            <tr>
+                <td><a href="/Reports/historical_reports" style='text-decoration: none'>Historical Reports</a></td>
+                <td>See a list of historical reports</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

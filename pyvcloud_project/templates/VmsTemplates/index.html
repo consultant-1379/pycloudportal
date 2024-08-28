@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{container_name}} - Cloud Provisioning Portal {% endblock title %}
+{% block content %}
+<h1>{{container_name}}</h1>
+<div id='tabs'>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a href="#" aria-current='page' class='nav-link active'>VMs</a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'Vapp:vapp_diagram' template_id container_name 'Vms:vm_templates'%}" aria-current='page' class='nav-link'>vApp Diagram</a>
+        </li>
+    </ul>
+</div>
+<div class="tab-content">
+    <div id="template_table" class="tab-pane active">
+        <table id="datatable_vm_template" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>CPUs</th>
+                    <th>Memory (MB)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for template in templates %}
+                    <tr>
+                        <td>{{template.name}}</td>
+                        <td>{{template.status}}</td>
+                        <td>{{template.number_of_cpus}}</td>
+                        <td>{{template.memory_allocation}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

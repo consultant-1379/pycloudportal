@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Clouds - Cloud Provisioning Portal {% endblock title %}
+{% block content %}
+<div id="cloudArea"><h1>Clouds</h1></div>
+<div id="orgvdcs_table">
+    <table id="datatable_orgvdcs" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Name</th>
+                {%for col_name in columns%}
+                    <th> {{col_name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {%for org_vdc in org_vdcs %}
+                <tr>
+                    <td><a href="{% url 'Vapp:vapp_index' org_vdc.org_vdc_id %}" style="text-decoration: none">{{org_vdc.name}}</a></td>
+                    {%if user.is_staff%}
+                        <td>{{org_vdc.quota_system}}</td>
+                        <td>{{org_vdc.provider_vdc_obj__name}}</td>
+                        <td>{{org_vdc.provider_ratio}}</td>
+                        <td>{{org_vdc.org_vdc_ratio}}</td>
+                    {%endif%}
+                        <td>{{org_vdc.cpu_limit}}</td>
+                        <td>{{org_vdc.memory_limit}}</td>
+                        <td>{{org_vdc.vapp_quota}}</td>
+                        <td>{{org_vdc.stored_tb_limit}}</td>
+                        <td>{{org_vdc.mig_ra_obj__name}}</td>
+                       <td>
+                            <div class="dropdown">
+                                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Action
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'Vapp:vapp_index' org_vdc.org_vdc_id %}"><img src="{% static 'img/empty-folder.png' %}" width='20' height='20'>  Open</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'edit_orgvdc' %}?org_vdc_id={{org_vdc.org_vdc_id}}&provider_ratio={{org_vdc.provider_ratio}}&org_vdc_ratio={{org_vdc.org_vdc_ratio}}"><img src="{% static 'img/pencil.png' %}" width='20' height='20'>  Edit</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

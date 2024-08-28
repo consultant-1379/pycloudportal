@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{catalog_name}} - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+<h1>{{catalog_name}} Catalogs</h1>
+<p><a href="/Catalogs">Browse Other Catalogs</a></p>
+<hr>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="{% url 'vapp_templates' catalog_name org_name %}" aria-current="page" class="nav-link">Vapp Templates</a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'vapp_templates_media' catalog_name org_name %}" aria-current="page" class="nav-link active">Media</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div id="media_table" class="tab-pane active">
+        <br>
+        <form action="{% url 'vapp_templates_media' catalog_name org_name %}" method="POST" enctype="multipart/form-data">
+            {%csrf_token%}
+            <b>{{form.as_p}}</b>
+            <input class="btn btn-primary btn-sm" type="submit" value="Upload"/>
+        </form>
+        <br>
+
+        <table id="datatable_media" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+            <thead>
+                <tr>
+                    <th>Media Name</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Size (MB)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in media %}
+                    <tr>
+                        <td>{{file.media_name}}</td>
+                        <td>{{file.status}}</td>
+                        <td>{{file.date_created}}</td>
+                        <td>{{file.size}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

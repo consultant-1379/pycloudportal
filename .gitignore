@@ -1,0 +1,13 @@
+**/__pycache__/*
+*.pyc
+*.log
+pyvcloud_db
+pyvcloud.log*
+virtualenv/spp_env/
+.vscode/launch.json
+pyvcloud_project/static/
+pyvcloud_test_database
+pyvcloud_test_database_backup
+.env
+nohup.out
+HistoricalReports/

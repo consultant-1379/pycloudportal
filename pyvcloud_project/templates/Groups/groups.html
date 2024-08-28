@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Ericsson Tools</h1>
+<div class="actions">
+    <a class="btn btn-primary" title="Request new 'Domain Group' using Gordon" target="_blank"
+        href="https://gordon-web.ericsson.se/">Gordon</a>
+    <a class="btn btn-primary" title="Add / Remove Users and Administrators of Groups" target="_blank"
+        href="https://i-acc.ericsson.se/">Instant Access</a>
+</div>
+<hr />
+<h1> Group Mappings </h1>
+<a class="btn btn-primary" href="{% url 'add_groups' %}">New Group Mappings</a>
+<div id="groups_table">
+    <table id="datatable_groups" class="table, table-stripped display compact dataTable no-footer"
+        style="width: 100% !important">
+        <thead>
+            <tr>
+                <!--if pooling-->
+                <th>Description</th>
+                <th>OrgVDC Name</th>
+                <th>Org Name</th>
+                <!--end of pooling-->
+                <th>LDAP Group DN</th>
+                <!--if pooling-->
+                <th>Read</th>
+                <th>Write</th>
+                <!--end of pooling-->
+                <th>Admin</th>
+                <!--if pooling-->
+                <th>Catalogs Read Access Restricted</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <td>{{group.description}}</td>
+                <td>{{group.org_vdc_obj__name}}</td>
+                <td>{{group.org_obj__name}}</td>
+                <td>{{group.group_dn}}</td>
+                <td>{{group.read_permission}}</td>
+                <td>{{group.write_permission}}</td>
+                <td>{{group.admin_permission}}</td>
+                <td>{{group.restrict_catalogs}}</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'edit_groups' group.pk %}"><img
+                                        src="{% static 'img/pencil.png' %}" width='25' height='25'> Edit</a></li>
+                            <li><a class="dropdown-item confirm-delete" href="{% url 'delete_groups' group.pk %}"><img
+                                        src="{% static 'img/delete.png' %}" width='25' height='25'> Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% endfor%}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}
+{% block footer_scripts %}
+<script type="text/javascript" charset="utf8" src="{% static 'js/groups.js' %}"></script>
+{% endblock%}

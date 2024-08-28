@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}vApp Report - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+{% with request_path=request.path %}
+{% if '/Reports/vapp_report/datacenter:' in request_path %}
+    <h1>{{ datacenter_name }} vApp Report</h1>
+    <form action="{% url 'download_datacenter_vapp_csv' datacenter_name=datacenter_name %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Download CSV</button>
+    </form>
+{% else %}
+    <h1>Overall vApp Report</h1>
+    <form action="{% url 'download_vapp_csv' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Download CSV</button>
+    </form>
+{% endif %}
+{% endwith %}
+<hr>
+<div id="report">
+    <table id="vapp_reports" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Datacenter Name</th>
+                <th>vApp Name</th>
+                <th>Status</th>
+                <th>Gateway</th>
+                <th>Created By</th>
+                <th>Creation Date</th>
+                <th>Running CPUs</th>
+                <th>Running Memory (GB)</th>
+                <th>Origin Catalog Name</th>
+                <th>Origin Template Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vapp_info in vapp_info_list %}
+            <tr>
+                <td>{{ vapp_info.catalog_name|default:"N/A" }}</td>
+                <td>{{ vapp_info.name|default:"N/A" }}</td>
+                <td>{{ vapp_info.vapp_power_state|default:"N/A" }}</td>
+                <td>{{ vapp_info.gateway|default:"N/A" }}</td>
+                <td>{{ vapp_info.created_by|default:"N/A" }}</td>
+                <td>{{ vapp_info.creation_date|default:"N/A" }}</td>
+                <td>{{ vapp_info.running_cpu|default:"N/A" }}</td>
+                <td>{{ vapp_info.running_memory|default:"N/A" }}</td>
+                <td>{{ vapp_info.origin_catalog_name|default:"N/A" }}</td>
+                <td>{{ vapp_info.origin_template_name|default:"N/A" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

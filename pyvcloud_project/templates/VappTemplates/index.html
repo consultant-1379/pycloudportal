@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{catalog_name}} - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+<div id="org_id" style="display:none;">{{org_id}}</div>
+
+<h1>{{catalog_name}} Catalogs</h1>
+<p><a href="/Catalogs">Browse Other Catalogs</a></p>
+<hr>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="{% url 'vapp_templates' catalog_name org_name %}" aria-current='page' class='nav-link active'>Vapp Templates</a>
+    </li>
+    <li class="nav-item">
+        <a href="{%url 'vapp_templates_media' catalog_name org_name %}" aria-current="page" class="nav-link">Media</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div id="template_table" class="tab-pane active">
+        <table id="datatable_templates" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Date Created</th>
+                    <th>CPUs</th>
+                    <th>Memory (GB)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for template in templates %}
+                    <tr class="vapptemplate_context_menu" id="{{template.id}}">
+                        <td><a href="{%url 'Vms:vm_templates' template.id %}" style='text-decoration: none'>{{template.name}}</a></td>
+                        <td>{{template.status}}</td>
+                        <td></td>
+                        <td>{{template.creationDate}}</td>
+                        <td>{{template.numberOfCpus}}</td>
+                        <td>{{template.memoryAllocation}}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Action
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{%url 'Vms:vm_templates' template.id %}"><img src="{% static 'img/empty-folder.png' %}" width='25' height='25'>  Open</a></li>
+                                    <li><a class="dropdown-item" href="{%url 'create_vapp_from_template' template.id %}"><img src="{% static 'img/plus.png' %}" width='25' height='25'>  Add To My Cloud</a></li>
+                                    <li><a class="dropdown-item delete_template" href="{%url 'vapp_templates_delete' template.id %}" ><img src="{% static 'img/remove.png' %}" width='25' height='25'> Delete</a></li>
+                                    <li><a class="dropdown-item" href="{%url 'vapp_templates_rename' template.id %}"><img src="{% static 'img/pencil.png' %}" width='25' height='25'> Rename</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+

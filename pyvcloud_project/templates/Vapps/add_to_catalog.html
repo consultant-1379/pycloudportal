@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extracss %}
+<link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+
+{% block content %}
+
+<div id="add_vapp_to_catalog">
+
+    <form action="{% url 'Vapp:add_vapp_to_catalog'  %}" method="post">
+        {% csrf_token %}
+        <div class="input text required">
+        <label class="required" for="new_template_name">Catalogued vApp Name: </label>
+        <input id="new_template_name" type="text" required name="new_template_name">
+        </div>
+        <input id="vapp_vcd_id" type="hidden" name="vapp_vcd_id" value="{{vapp_vcd_id}}">
+        <div class="input select required">
+            <label for="orgcatalogs">Cloud</label>
+            <select name="orgcatalogs" id="orgcatalogs">
+                {% for catalog in catalogs %}
+                    <option value="{{catalog.name}}">{{catalog.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <input type="submit" class='btn btn-info monitor_button' value="Add To Catalog">
+    </form>
+</div>
+{% endblock content %}

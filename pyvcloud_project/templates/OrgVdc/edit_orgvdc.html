@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block footer_scripts %}
+    <script type="text/javascript" charset="utf8" src="{%static "js/orgvdc.js"%}"></script>
+{%endblock%}
+{% block extracss %}
+    <link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+{% block content %}
+
+<div class='wrapper_orgvdc_edit' style="border-bottom: solid black">
+    <div class='orgvdc_edit_quota'>
+        <h1 id='edit_orgvdc_h1'>Edit '{{name}}'' Cloud</h1>
+        <h3 id='edit_orgvdc_h3'>'{{name}}' Quota Settings</h3>
+    </div>
+    <div class="orgvdc_edit_resources">
+        <h3 style="margin-top: 9%"> Provider Resources Summary </h2>
+    </div>
+</div>
+<div class='wrapper_orgvdc_edit fs-7'>
+    <div class='orgvdc_edit_quota input text fw-bold'> 
+        <form action= "{% url 'edit_orgvdc' %}" method='POST'>
+            {% csrf_token %}
+            <div class='required'>
+                {{form.as_p}}
+                <input type='hidden' id='org_vdc_ratio' name='org_vdc_ratio' value='{{org_vdc_ratio}}'/>
+                <input type='hidden' id='provider_ratio' name='provider_ratio' value='{{provider_ratio}}'/>
+            </div>
+            <input type='submit', value="Save" class="btn btn-success btn-lg" >
+        </form>
+    </div>
+    <div class="orgvdc_edit_resources" >
+        <div style='margin-bottom: 5%'>
+            <b>Resulting CPUs Allocated:</b> <span style='color:blue'>{{cpu_limit}}</span> of {{total_cpus}} available in provider.<br>
+            <b>Resulting Memory Allocated:</b> <span style='color:blue'>{{memory_limit}} GB </span>of {{total_memory}} GB available in provider.
+        </div>
+        <div style='margin-bottom: 5%'>
+            <b>OrgVdc Memory(GB) / CPU Ratio: </b><span style='color:blue'> {{org_vdc_ratio}}</span><br>
+            <b>Provider Memory(GB) / CPU Ratio: </b> <span style='color:blue'> {{provider_ratio}}</span>
+        </div>
+        <table id="orgvdc_edit_table" class="display dataTable" >
+            <thead>
+                <tr>
+                    <th>Datacenter Name</th>
+                    <th>Running CPUs Quota</th>
+                    <th>Running Memory Quota (GB)</th>
+            </thead>
+            <tbody>
+                {%for orgvdc in orgvdcs%}
+                    <tr>
+                        <td>{{orgvdc.name}}</td>
+                        <td>{{orgvdc.cpu_limit}}</td>
+                        <td>{{orgvdc.memory_limit}}</td>
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </table>    
+        <div>
+        </div>    
+    </div>
+</div>
+{% endblock content %}

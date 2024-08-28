@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="catalog_table">
+    <table id="datatable_orgs" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Name</th>
+                {%for col_name in columns%}
+                    <th> {{col_name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {%for org in orgs %}
+                <tr>
+                    <td><a href="{% url 'Vapp:vapp_index' org.org_vdc_id %}" style="text-decoration: none">{{org.name}} Reflect</a> </td>
+                    {%if user.is_staff%}
+                        <td>{{org.quota_system}}</td>
+                        <td>{{org.provider_vdc_obj__name}}</td>
+                        <td>{{org.provider_ratio}}</td>
+                        <td>{{org.org_vdc_ratio}}</td>
+                    {%endif%}
+                        <td>{{org.cpu_limit}}</td>
+                        <td>{{org.memory_limit}}</td>
+                        <td>{{org.vapp_quota}}</td>
+                        <td>{{org.stored_tb_limit}}</td>
+                        <td>{{org.mig_ra_obj__name}}</td>
+                        <td></td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+
+
+  

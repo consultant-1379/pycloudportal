@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Historical Reports - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+  <h1>Historical Reports</h1>
+  <hr>
+  <div id="report">
+    <table id="historical_reports" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+      <thead>
+        <tr>
+          <th>Report Name</th>
+          <th>Creation Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+          <tr>
+            {# Extracting day, month, and year from the report datetime #}
+            {% with day=report.created_date|date:"jS" month=report.created_date|date:"F" year=report.created_date|date:"Y" %}
+              {# Creating a custom name with the desired format #}
+              {% if 'vapp_report' in report.name %}
+                {% with custom_name_prefix='vApp Report' %}
+                  <td><a href="{% url 'historical_report_download' reportName=report.name %}">{{ custom_name_prefix|default:'' }} - {{ day }} {{ month }} {{ year }}</a></td>
+                {% endwith %}
+              {% elif 'datacenter_report' in report.name %}
+                {% with custom_name_prefix='Datacenter Report' %}
+                  <td><a href="{% url 'historical_report_download' reportName=report.name %}">{{ custom_name_prefix|default:'' }} - {{ day }} {{ month }} {{ year }}</a></td>
+                {% endwith %}
+              {% else %}
+                <td><a href="{% url 'historical_report_download' reportName=report.name %}">Unknown Report Type - {{ day }} {{ month }} {{ year }}</a></td>
+              {% endif %}
+            {% endwith %}
+            <td>{{ report.created_date }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock content %}

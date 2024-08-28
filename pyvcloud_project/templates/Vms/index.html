@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{container_name}} - Cloud Provisioning Portal {% endblock title %}
+
+{% block content %}
+<style>
+    td.details-control {
+        cursor: pointer;
+    }
+</style>
+{% block extrajs %}
+<script>
+    var dod = {{dod | safe}};
+    var attached = {{attached | safe}}
+</script>
+<script type="text/javascript" charset="utf8" src="{%static 'js/vms.js'%}"></script>
+
+{% endblock %}
+
+
+<div id="vapp_name"><h2>{{vAppName}}</h2>
+<h1>{{container_name}} </h1>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#" aria-current='page' class='nav-link active'>VMs</a>
+    </li>
+    <li class="nav-item">
+        <a href="{%url 'Vapp:vapp_diagram' vapp_id container_name 'Vms:vm_index' %}" aria-current="page" class="nav-link">vApp Diagram</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div id="vms_table" class="tab-pane active">
+        <table id="datatable_vms" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+            <thead>
+                <tr>
+                    <th>VM Name</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>CPUs</th>
+                    <th>Memory (GB)</th>
+                    {% if user.is_staff or  user.is_superuser %}
+                    <th>Provisioned Storage</th>
+                    <th>Used Storage</th>
+                    <th>HostName</th>
+                    {% endif %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vm_name, vm in vms.items %}
+                    <tr id={{vm.id}}>
+                        {% if not user.is_staff or not user.is_superuser %}
+                        <td ><a href="#" style='text-decoration: none'>  {{vm.name}}</a></td>
+                        {% else %}
+                        <td class="details-control" style="position:relative"><a href="#" style='text-decoration: none'> <img src="{% static 'img/details_open.png' %}" width='20' height='20'> {{vm.name}}</a></td>
+                        {% endif %}
+                        <td>{{vm.status}}</td>
+                        <td class="vm_status"><button class="btn btn-info btn-sm monitor_button" id="monitoring_button" data-vm-id="{{ vm.id }}">Monitoring</button></td>
+                        <td>{{vm.number_of_cpus}}</td>
+                        <td>{{vm.memory_mb}} GB</td>
+                        {% if  user.is_staff or  user.is_superuser %}
+                        <td style="position:relative"> {{vm.provisioned_storage}} GB</td>
+                        <td style="position:relative"> {{vm.committed_storage}} GB</td>
+                        <td>{{vm.hostname}}</td>
+                        {% endif %}
+
+                        <td>
+                            <div class="dropdown d-grid gap-2 col-6 mx-auto ">
+                                {% if vm.busy %}
+                                    <button class="btn btn-primary btn-sm dropdown-toggle disabled" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Action
+                                </button>
+                                {% else %}
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Action
+                                </button>
+                                {% endif %}
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'Vms:power_on_vm' vapp_id vm.id %}"><img src="{% static 'img/power_on.png' %}" width='20' height='20'> Power On</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Vms:shutdown_vm' vapp_id vm.id %}" onclick="return confirm('Are you sure you want to shut down VM {{vm.name}}?')"><img src="{% static 'img/guest_shutdown.png' %}" width='20' height='20'> Guest Shutdown</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Vms:power_off_vm' vapp_id vm.id %}" onclick="return confirm('Are you sure you want to power off VM {{vm.name}}?')"><img src="{% static 'img/hard_poweroff.png' %}" width='20' height='20'> Hard Power Off</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'Vms:delete_vm' vapp_id vm.id %}" onclick="return confirm('Are you sure you want to delete VM {{vm.name}}?')"><img src="{% static 'img/delete.png' %}" width='20' height='20'> Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

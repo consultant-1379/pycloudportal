@@ -1,0 +1,10 @@
+# run with bash -i import_commands
+
+python manage.py import_pvdc
+python manage.py import_organisations
+python manage.py import_orgvdc
+python manage.py import_catalogs
+python manage.py import_vapps
+python manage.py import_vms
+python manage.py import_vapp_networks
+python manage.py import_vm_storage_from_vsphere

@@ -1,0 +1,131 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Datatables-->
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/datatables-1.11.5.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "css/vendors/jquery-ui.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "css/vendors/jquery-ui-custom.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "css/vendors/datatables_custom.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/Buttons/css/buttons.bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/FixedHeader/css/fixedHeader.bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/Responsive/css/responsive.bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/Scroller/css/scroller.bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{%static "vendors/DataTables/SearchBuilder/css/searchBuilder.bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+    <!-- <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}"> -->
+    
+    <link rel="stylesheet" href="{% static "css/portal/general.css" %}">
+
+    {% block extracss %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <div id="page">
+        <div id="page_header" style="overflow: hidden;">
+            <img alt="elogo" class="elogo" src="{% static "img/elogo.png" %}" />
+        </div>
+        <div id="nav_bar">
+            <ul class="links left" style="float:left;">
+               <li>
+                   <a href="/OrgsVdcs">MY CLOUD</a>
+               </li>
+               <li>
+                  <a href="/Catalogs">CATALOGS</a>
+               </li>
+               <li>
+                    <a href="/Reports">REPORTS</a>
+                </li>
+                <li>
+                    <a href="https://eteamproject.internal.ericsson.com/browse/ETTD-5431" target="_blank">SUPPORT</a>
+                </li>
+
+              {%if user.is_staff or user.is_superuser%}
+               <li>
+                  <a href="/Groups">GROUPS*</a>
+               </li>
+               {%endif%}
+                {%if user.is_staff or user.is_superuser%}
+                <li>
+                   <a href="/admin">SPP Admin Section*</a>
+                </li>
+                <li>
+                   <a href="/admin/doc/">SPP Documentation*</a>
+                </li>
+                <li>
+                   <a href="/admin">SPP Admin Section*</a>
+                </li>
+                {%endif%}
+                {%if user.is_staff %}
+                <li>
+                   <a href="/django-rq">Worker Queues*</a>
+                </li>
+                {%endif%}
+
+                {% if user.email %}
+                <li>
+                    <a href="/Users/logout">
+                        LOGOUT ({{ user.username }})
+                    </a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="/Users/login" class="linkselected">
+                        LOGIN
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <img alt="ebottomgrad" class="egrad" src="{% static "img/ebottomgrad.jpg" %}" width="100%" height="3px" />
+
+        <div id="navigation" style="clear:left;">
+        </div>
+
+        <div id="main">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert" style="width:33%">{{message}}</div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert" style="width:33%">{{message}}</div>
+                    {% endif %}
+                    {% if message.tags == 'warning' %}
+                        <div class="alert alert-info" role="alert" style="width:33%">{{message}}</div>
+                    {% endif %}
+                    {% if message.tags == 'info'%}
+                        <div class="alert alert-info" role="alert" style="width:33%">{{message}}</div>
+                    {%endif%}
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    <!--jquery-->
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/jquery/jquery-3.6.0.js"%}"></script>
+    <!--jquery ui-->  
+    <!-- used for monitor_button on Vapp index -->
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/jquery-ui-1.13.2/jquery-ui.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "js/popper.min.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "js/bootstrapV5.1.3..min.js"%}"></script>
+    <!-- Datatables -->
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/datatables.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/Buttons/js/dataTables.buttons.min.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/FixedHeader/js/dataTables.fixedHeader.min.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/Responsive/js/dataTables.responsive.min.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/Scroller/js/dataTables.scroller.min.js"%}"></script>
+    <script type="text/javascript" charset="utf8" src="{%static "vendors/DataTables/SearchBuilder/js/dataTables.searchBuilder.min.js"%}"></script>
+       <!--custom js-->
+    <script type="text/javascript" charset="utf8" src="{%static "js/custom.js"%}"></script>
+    {% block footer_scripts %}
+    {% endblock footer_scripts %} 
+    {% block extrajs %}{% endblock %}
+</body>
+
+</html>

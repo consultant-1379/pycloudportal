@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Datacenter Report - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+<h1>Datacenter Report</h1>
+<form action="{% url 'download_datacenter_csv' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Download CSV</button>
+</form><hr>
+<div id="report">
+    <table id="datacenter_reports" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Datacenter Name</th>
+                <th>Provider Name</th>
+                <th>Running CPUs</th>
+                <th>Running CPUs Quota</th>
+                <th>Unused Running CPUs Quota</th>
+                <th>Running Memory (GB)</th>
+                <th>Running Memory Quota (GB)</th>
+                <th>Unused Running Memory Quota (GB)</th>
+                <th>Running vApps</th>
+                <th>Running vApps Quota</th>
+                <th>Unused Running vApps Quota</th>
+                <th>Total vApps</th>
+                <th>Total vApps Quota</th>
+                <th>Unused Total vApps Quota</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for datacenter in datacenter_info %}
+            <tr>
+                <td><a href="{% url 'datacenter_vapp_report' datacenter_name=datacenter.datacenter_name %}">{{ datacenter.datacenter_name|default:"N/A" }}</a></td>
+                <td>{{ datacenter.provider_name|default:"N/A" }}</td>
+                <td>{{ datacenter.running_cpus|default:"N/A" }}</td>
+                <td>{{ datacenter.running_cpus_quota}}</td>
+                <td>
+                    {% if datacenter.running_cpus_quota == 0 %}
+                    Unavailable
+                    {% else %}
+                        {{ datacenter.unused_running_cpus_quota }}
+                    {% endif %}
+                </td>
+                <td>{{ datacenter.running_memory_gb|default:"N/A" }}</td>
+                <td>{{ datacenter.running_memory_quota_gb}}</td>
+                <td>
+                    {% if datacenter.running_memory_quota_gb == 0 %}
+                        Unavailable
+                    {% else %}
+                        {{ datacenter.unused_running_memory_quota_gb }}
+                    {% endif %}
+                </td>
+                <td>{{ datacenter.running_vApps|default:"N/A" }}</td>
+                <td>{{ datacenter.running_vApps_quota}}</td>
+                <td>
+                    {% if datacenter.running_vApps_quota == 0 %}
+                        Unavailable
+                    {% else %}
+                        {{ datacenter.unused_running_vApps_quota }}
+                    {% endif %}
+                </td>
+                <td>{{ datacenter.total_vApps|default:"N/A" }}</td>
+                <td>{{ datacenter.total_vApps_quota}}</td>
+                <td>
+                    {% if datacenter.total_vApps_quota == 0 %}
+                        Unavailable
+                    {% else %}
+                        {{ datacenter.unused_total_vApps_quota }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

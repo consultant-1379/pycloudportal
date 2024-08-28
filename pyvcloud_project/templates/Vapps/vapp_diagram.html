@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="{%static "css/portal/vapp_network.css" %}">
+{% endblock extracss %}
+{% block title %} {{container_name}} - Cloud Provisioning Portal {% endblock title %}
+{% block content %}
+<script>
+    var internal_network_names = "{{internal_network_names|safe}}"
+    var external_network_names = "{{external_network_names|safe}}"
+    var vms = "{{vms|safe}}".replaceAll("'",'"').replaceAll("True", "true").replaceAll("False", "false")
+</script>
+<h1>{{container_name}}</h1>
+<div id='tabs'>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            {%with url=template_url%}
+            <a href="{% url url template_id %}" aria-current='page' class='nav-link'>VMs</a>
+            {% endwith %}
+        </li>
+        <li class="nav-item">
+            <a href="#" aria-current='page' class='nav-link active'>vApp Diagram</a>
+        </li>
+    </ul>
+</div>
+<div id="svg_container">
+{% endblock content %}
+{% block footer_scripts %}
+<script type="text/javascript" charset="utf8" src="{%static "js/VappTemplates/vapp_network.js" %}"></script>
+{%endblock footer_scripts%}

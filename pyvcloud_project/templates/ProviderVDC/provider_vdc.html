@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ProviderVdcs - Cloud Provisioning Portal {% endblock title %}
+
+{% block content %}
+<h1>Provider Vdcs</h1>
+<hr>
+<div id="providerVdc">
+    <table id="datatable_providerVdc" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quota System</th>
+                <th>Available CPUs</th>
+                <th>CPU Multiplier</th>
+                <th>Resulting CPUs Available</th>
+                <th>Available Memory (GB)</th>
+                <th>Memory Multiplier</th>
+                <th>Resulting Memory Available (GB)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for provider_vdc in provider_vdc_data %}
+            <tr>
+                <td>{{ provider_vdc.name }}</td>
+                <td>
+                    {% if provider_vdc.new_quota_system %}
+                        Running CPUs / Memory
+                    {% else %}
+                        Running vApps
+                    {% endif %}
+                </td>
+                <td>{{ provider_vdc.available_cpus }}</td>
+                <td>{{ provider_vdc.cpu_multiplier|floatformat:2 }}</td>
+                <td>{{ provider_vdc.resulting_cpus|floatformat:2 }}</td>
+                <td>{{ provider_vdc.available_memory_gb }}</td>
+                <td>{{ provider_vdc.memory_multiplier|floatformat:2 }}</td>
+                <td>{{ provider_vdc.resulting_memory_gb|floatformat:2 }}</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'edit_provider_vdc' provider_vdc.id %}"><img src="{% static 'img/pencil.png' %}" width='20' height='20'> Edit</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

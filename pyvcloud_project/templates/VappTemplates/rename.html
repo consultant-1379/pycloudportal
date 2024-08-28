@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rename vApp Template - Cloud Provisioning Portal{% endblock title %}
+
+{% block extracss %}
+    <link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+
+{% block content %}
+
+<h1>Rename vApp Template</h1>
+<form action="{% url 'vapp_templates_rename' vapp_template_id %}" id="VappTemplateRenameForm" method="post" accept-charset="utf-8">
+    {% csrf_token %}
+    <div class="input text required">
+        <label for="VappTemplateName">vApp Template Name</label>
+        <input name="vapp_template_name" type="text" id="vapp_template_name" required="required" value={{vapp_template_name}}>
+    </div>
+
+    <div class="submit">
+        <input id="rename_button" type="submit" value="Rename">
+    </div>
+</form>
+</div>
+
+{% endblock content %}

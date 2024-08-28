@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} ProviderVdcs - Cloud Provisioning Portal {% endblock title %}
+{% block extracss %}
+    <link rel="stylesheet" href="{% static "css/portal/forms.css" %}">
+{% endblock extracss %}
+{% block content %}
+
+<hr>
+<div id="providerVdc" style="border-bottom: solid black">
+    <h1>Edit Provider Vdc '{{ cluster_name }}'</h1>
+</div>
+<body>
+    <form action="save_provider_vdc" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="cluster_name" name="cluster_name" value="{{ cluster_name }}">
+        <div class="checkbox-container" style="display: inline-flex; font-size:large">
+            <label for="new_quota_system" style="padding-right: 10px;">Use CPU / Memory Quota System</label>
+            <input type="checkbox" id="new_quota_system" name="new_quota_system" {% if provider_vdc.new_quota_system %}checked{% endif %} value="1">
+        </div>
+        <div>
+            <strong style="font-size: 17px;">Available CPUs:</strong>
+            <br>
+            <input type="text" id="provider_cpus" name="available_cpus" value="{{ provider_vdc.available_cpus }}" disabled style="font-size: 17px;">
+        </div>
+        <div>
+            <strong>CPU Multiplier: <span style="color: red;">*</span></strong>
+            <br>
+            <input type="number" id="cpu_multiplier" name="cpu_multiplier" class="affects_summary" value="{{ provider_vdc.cpu_multiplier }}" style="font-size: 15px;" max="100" step="0.00001" min="0">    
+        </div>
+        <div>
+            <strong style="font-size: 17px;">Available Memory (GB):</strong>
+            <br>
+            <input type="text" id="provider_memory" name="available_memory" value="{{ provider_vdc.available_memory_gb }}" disabled style="font-size: 17px;">
+        </div>
+        <div>
+            <strong>Memory Multiplier: <span style="color: red;">*</span></strong>
+            <br>
+            <input type="number" id="memory_multiplier" name="memory_multiplier" class="affects_summary" value="{{ provider_vdc.memory_multiplier }}" style="font-size: 15px;" max="100" step="0.00001" min="0">    
+        </div>
+        <div id="summary_div">
+            <p><strong>Resulting CPUs Available:</strong> <span id="resulting_cpus">Calculating... (x{{ provider_vdc.cpu_multiplier }})</span></p>
+            <p><strong>Resulting Memory Available:</strong> <span id="resulting_memory">Calculating... (x{{ provider_vdc.memory_multiplier }})</span> GB</p>
+        </div>
+        <div>
+            <input type='submit' value="Save" class="btn btn-success btn-lg">
+        </div>
+    </form>
+
+    <script>
+        function calculateResults() {
+            const availableCPUs = parseFloat(document.getElementById('provider_cpus').value);
+            const cpuMultiplier = parseFloat(document.getElementById('cpu_multiplier').value);
+            const availableMemory = parseFloat(document.getElementById('provider_memory').value);
+            const memoryMultiplier = parseFloat(document.getElementById('memory_multiplier').value);
+
+            const resultingCPUs = availableCPUs * cpuMultiplier;
+            const resultingMemory = availableMemory * memoryMultiplier;
+
+            document.getElementById('resulting_cpus').textContent = `Resulting CPUs Available: ${resultingCPUs.toFixed(2)} (x${cpuMultiplier})`;
+            document.getElementById('resulting_memory').textContent = `Resulting Memory Available: ${resultingMemory.toFixed(2)} GB (x${memoryMultiplier})`;
+        }
+        document.getElementById('cpu_multiplier').addEventListener('input', calculateResults);
+        document.getElementById('memory_multiplier').addEventListener('input', calculateResults);
+
+        calculateResults();
+    </script>
+</body>
+{% endblock content %}

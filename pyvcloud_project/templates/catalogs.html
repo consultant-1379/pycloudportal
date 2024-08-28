@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalogs - Cloud Provisioning Portal{% endblock title %}
+
+{% block content %}
+<h1>Catalogs</h1>
+<hr>
+<div id="catalog_table">
+    <table id="datatable_catalogs" class="table, table-stripped display compact dataTable no-footer"
+        style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Catalog Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for catalog in catalogs %}
+            <tr>
+                <td><a href="{% url 'vapp_templates' catalog.name catalog.org_obj__name%}" style='text-decoration: none'>{{catalog.name}}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

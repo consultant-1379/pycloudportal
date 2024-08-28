@@ -1,0 +1,17 @@
+[DESIGN]
+# Maximum number of locals for function / method body
+max-locals=30
+# Maximum number of arguments for function / method
+max-args=10
+# Maximum number of branches for function / method
+max-branches=20
+
+[MASTER]
+# Allow list for extension packages
+extension-pkg-allow-list=lxml
+
+[MESSAGES CONTROL]
+# Disable specific messages
+disable=logging-fstring-interpolation, invalid-name, broad-exception-caught, broad-exception-raised, unused-argument, unused-variable
+# Maximum line length
+max-line-length=200

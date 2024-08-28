@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Recompose Vapp - Cloud Provisioning Portal {% endblock title %}
+{% block footer_scripts %}
+<script type="text/javascript" charset="utf8" src="{%static 'js/recompose_vapp.js'%}"></script>
+{% endblock footer_scripts %}
+{% block content %}
+
+<div id="rename_vapps">
+    <h3>Recompose Vapp {{vapp_name}}</h3>
+    <form action="{% url 'Vapp:recompose_vapp' vapp_id  %}" method="post">
+        {% csrf_token %}
+        <div class="input select required col-sm-4 col-md-4 col-lg-4 ">
+            <label for="orgcatalogs">Select A Catalog</label>
+            <select class="form-select" name="orgcatalogs" id="orgcatalogs">
+                <option selected="selected"></option>
+                {% for catalog in catalogs %}
+                    <option data-tag="{{catalog.name}}" value="{{catalog.vcd_id}}">{{catalog.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+        <div class="input select required col-sm-4 col-md-4 col-lg-4 ">
+            <label for="catalog_templates">Select A Template</label>
+            <select class="form-select" name="catalog_templates" id="catalog_templates">
+                <option selected="selected"></option>
+                {% for catalog,templates in templates.items %}
+                {% for template in templates %}
+                    <option value="{{template.1}}" data-tag="{{catalog}}" >{{template.0}}</option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+        <div class="input select required col-sm-4 col-md-4 col-lg-4">
+            <label for="recompose_vms">Vm's (Ctrl-click for multi select)</label>
+            <select class="form-select" multiple  name="recompose_vms" id="recompose_vms">
+                <option selected="selected"></option>
+                {% for template, vm_infos in template_vms.items %}
+                {% for vm_info in vm_infos %}
+                    <option data-tag="{{template}}" value="{{vm_info.1}}|{{vm_info.0}}">{{vm_info.0}}</option>
+                {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+        <input type="submit" value="OK">
+    </form>
+</div>
+{% endblock content %}

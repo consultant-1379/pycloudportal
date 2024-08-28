@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Vapps - Cloud Provisioning Portal {% endblock title %}
+{% block footer_scripts %}
+<script type="text/javascript" charset="utf8" src="{%static 'js/vapps.js'%}"></script>
+{% endblock footer_scripts %}
+{% block content %}
+
+<div id="cloudArea_name"><h2>{{cloudAreaName}}</h2></div>
+<div id="orgvdc_id" style="display:none;">"{{org_vdc_id}}"</div>
+<div id="vapp_table">
+    <table id="datatable_vapps" class="table, table-stripped display compact dataTable no-footer" style="width: 100% !important">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Gateway</th>
+                <th>Created By</th>
+                <th>Sharing</th>
+                <th>Date Created</th>
+                <th>VM's</th>
+                <th>Running Cpu's</th>
+                <th>Running Memory (GB)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for vapp in vapps %}
+                <tr id="{{vapp.vcd_id}}">
+                    <td><a href="{% url 'Vms:vm_index' vapp.vcd_id  %}" style='text-decoration: none'>{{vapp.name}}</a></td>
+                    <td>{{vapp.power_state}}</td>
+                    <td class="vapp_status"><button class="btn btn-info btn-sm monitor_button" id="monitoring_button">Monitoring</button></td>
+                    <td>{{vapp.gateway}}</td>
+                    <td>{{vapp.created_by}}</td>
+
+                    <td>
+                        {% if admin_permission or vapp.created_by == sppuser %}
+                        <select id ="share_unshare_vapp" onchange="location = this.value;">
+                        {% else %}
+                        <select id ="share_unshare_vapp" disabled onchange="location = this.value;">
+                        {% endif %}
+                            {% if vapp.shared %}
+                            <option value="{%url 'Vapp:vapp_share_unshare' vapp.vcd_id org_vdc_id vapp.name 1 %}" selected> On</option>
+                            <option value="{%url 'Vapp:vapp_share_unshare' vapp.vcd_id org_vdc_id vapp.name 0 %}"> Off</option>
+                            {% else %}
+                            <option value="{%url 'Vapp:vapp_share_unshare' vapp.vcd_id org_vdc_id vapp.name 1 %}" > On</option>
+                            <option value="{%url 'Vapp:vapp_share_unshare' vapp.vcd_id org_vdc_id vapp.name 0 %}" selected> Off</option>
+                            {% endif %}
+                        </select>
+                    </td>
+                    <td>{{vapp.created}}</td>
+                    <td>{{vapp.number_of_vms}}</td>
+                    <td>{{vapp.cpu_on_count}}</td>
+                    <td>{{vapp.memory_on_count}}</td>
+                    <td>
+                        <div class="dropdown">
+                        {% if vapp.busy %}
+                        <button class="btn btn-primary dropdown-toggle disabled" type="button" data-bs-toggle="dropdown" aria-expanded="false">   Action </button>
+                        {% else %}
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">  Action </button>
+                        {% endif %}
+
+
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'Vms:vm_index' vapp.vcd_id  %}"> <img src="{% static 'img/empty-folder.png' %}" width='20' height='20'> Open</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:start_vapp' vapp.vcd_id org_vdc_id %}"> <img src="{% static 'img/power_on.png' %}" width='20' height='20'>  Start</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:stop_vapp' vapp.vcd_id org_vdc_id %}" onclick="return confirm('Are you sure you want to Stop Vapp {{vapp.name}}?')"> <img src="{% static 'img/poweroff.png' %}" width='20' height='20'> Stop</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:poweroff_vapp' vapp.vcd_id org_vdc_id %}" onclick="return confirm('Are you sure you want to Hard Poweroff Vapp {{vapp.name}}?')"> <img src="{% static 'img/hard_poweroff.png' %}" width='20' height='20'> Hard Poweroff</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:add_vapp_to_catalog' %}?vapp_vcd_id={{vapp.vcd_id}}&vapp_name={{vapp.name}}&org_vdc_id={{org_vdc_id}}" > <img src="{% static 'img/save.png' %}" width='20' height='20'> Add To A Catalog</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:recompose_vapp' vapp.vcd_id  %}"> <img src="{% static 'img/recompose.png' %}" width='20' height='20'> Recompose</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:delete_vapp' vapp.vcd_id %}" onclick="return confirm('Are you sure you want to Delete Vapp {{vapp.name}}?')">  <img src="{% static 'img/delete.png' %}" width='20' height='20'> Delete</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:vapp_poweroff_and_delete' vapp.vcd_id org_vdc_id vapp.name %}" onclick="return confirm('Are you sure you want to Poweroff and Delete Vapp {{vapp.name}}?')"> <img src="{% static 'img/poweroffdelete.png' %}" width='20' height='20'> Poweroff And Delete</a></li>
+                            <li><a class="dropdown-item" href="{% url 'Vapp:vapp_rename_form' vapp.vcd_id vapp.name %}"> <img src="{% static 'img/edit.png' %}" width='20' height='20'> Rename</a></li>
+                        </ul>
+                        </div>
+                    </td>
+                </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
